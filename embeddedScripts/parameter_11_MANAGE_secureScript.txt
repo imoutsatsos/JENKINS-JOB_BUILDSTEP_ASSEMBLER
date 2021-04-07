@@ -1,0 +1,12 @@
+/*
+parameter_13_MANAGE_secureScript
+*/
+
+html='''<div id="managePlan">
+<input id="addData" name="subject" type="button" value="ADD BUILD STEPS" onclick="addToSourceData('sourcedataJson')"/>
+<input id="deleteData" type="button" value="DELETE" onclick="setJsonActionParams('sourcedataJson', this.id)"/>
+<input id="moveUp" type="button" value="MOVE_UP" onclick="setJsonActionParams('sourcedataJson', this.id)"/>
+<input id="mvStep" type="number" value="1" step=1 style="width: 3em;">
+<input id="moveDown" type="button" value="MOVE_DOWN" onclick="setJsonActionParams('sourcedataJson', this.id)"/>
+</div>'''
+return html

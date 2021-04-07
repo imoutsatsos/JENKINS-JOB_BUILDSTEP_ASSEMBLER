@@ -1,0 +1,772 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><project>
+  <actions/>
+  <description>A utility job to assemble build steps from builders of one or more freestyle projects</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <job-metadata plugin="metadata@1.1.0b">
+      <values class="linked-list">
+        <metadata-string>
+          <name>job-type</name>
+          <description>Options: visualization,data-source
+Galaxy: tool.tool_type</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <value>visualization</value>
+        </metadata-string>
+        <metadata-string>
+          <name>output-format</name>
+          <description>This is the data type of the output file. It can be one of the supported data types ( e.g., "tabular" ) or the format of the tool's input dataset ( e.g., format="input" ). 
+It can also be an image type if the output is destined for visualization</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <value>csv,rds,png</value>
+        </metadata-string>
+        <metadata-string>
+          <name>metadata-source</name>
+          <description>This reads the metadata information from the tool's input dataset properties file(named with the extension.properties)</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>true</exposedToEnvironment>
+          <value>properties</value>
+        </metadata-string>
+        <metadata-string>
+          <name>project-repository</name>
+          <description>Bitbucket repository for this project. example https://bitbucket.org/novartisnibr/qmic-job_name
+Clear if no repository </description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>true</exposedToEnvironment>
+          <value/>
+        </metadata-string>
+        <metadata-string>
+          <name>project-status</name>
+          <description>A status flag for the project.(test,demo,production,deprecated)</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <value>test</value>
+        </metadata-string>
+        <metadata-tree>
+          <name>stats-engine</name>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <children class="linked-list">
+            <metadata-string>
+              <name>library</name>
+              <description>comma separated list of stat-engine libraries required for the job.</description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>false</generated>
+              <exposedToEnvironment>true</exposedToEnvironment>
+              <value>caret,sm</value>
+            </metadata-string>
+            <metadata-string>
+              <name>export-session</name>
+              <description>Options: true/false If the code supports it, it will export session data from the stat engine for debugging purposes</description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>false</generated>
+              <exposedToEnvironment>true</exposedToEnvironment>
+              <value>false</value>
+            </metadata-string>
+          </children>
+        </metadata-tree>
+        <metadata-tree>
+          <name>job-info</name>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>true</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <children class="linked-list">
+            <metadata-tree>
+              <name>last-saved</name>
+              <description/>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>true</generated>
+              <exposedToEnvironment>false</exposedToEnvironment>
+              <children class="linked-list">
+                <metadata-date>
+                  <name>time</name>
+                  <description/>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <value>
+                    <time>1617818886633</time>
+                    <timezone>America/New_York</timezone>
+                  </value>
+                  <checked>false</checked>
+                </metadata-date>
+                <metadata-tree>
+                  <name>user</name>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <children class="linked-list">
+                    <metadata-string>
+                      <name>display-name</name>
+                      <description/>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>Ioannis Moutsatsos</value>
+                    </metadata-string>
+                    <metadata-string>
+                      <name>full-name</name>
+                      <description/>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>Ioannis Moutsatsos</value>
+                    </metadata-string>
+                  </children>
+                </metadata-tree>
+              </children>
+            </metadata-tree>
+          </children>
+        </metadata-tree>
+      </values>
+    </job-metadata>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.31">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>WHAT_IS_THIS</name>
+          <description/>
+          <defaultValue>A utility job to assemble build steps from builders of one or more freestyle projects</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>HELPER_DB</name>
+          <description>[hidden] Identifier for the DB instance. Used to provide a common connection name across all project sql</description>
+          <randomName>choice-parameter-702205291254335</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>import org.kohsuke.stapler.Stapler 
+def sessionID= Stapler.getCurrentRequest().getSession().getId() 
+dbInstance= "${jenkinsProject.name}_$sessionID" as String 
+return """ 
+&lt;input id="helperDb" name="value" type="text" class="setting-input " value="$dbInstance"&gt; 
+"""</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script/>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters/>
+          <choiceType>ET_FORMATTED_HIDDEN_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.3">
+          <name>SOURCE_PROJECT</name>
+          <description>Select a Jenkins Project to reveal build steps that can be copied to the target project</description>
+          <randomName>choice-parameter-1325264054354115</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>displayAllJobs.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>nameValue</string>
+                <string>TestMosaic</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>true</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.3">
+          <name>LAST_CONFIGURATION</name>
+          <description/>
+          <randomName>choice-parameter-4359415493047021</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>UC_RefHelper_findLastBuildWhereParam.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>vSearchSpace</string>
+                <string>JOB_CONFIG_ANALYZER</string>
+              </entry>
+              <entry>
+                <string>vName</string>
+                <string>PROJECT_NAME</string>
+              </entry>
+              <entry>
+                <string>vValue</string>
+                <string>$SOURCE_PROJECT</string>
+              </entry>
+              <entry>
+                <string>vIncludeParent</string>
+                <string>false</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>SOURCE_PROJECT</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>REVIEW_PROJECT</name>
+          <description>&lt;p&gt;Links and description of the project</description>
+          <randomName>choice-parameter-4339593695461294</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>import hudson.model.*
+jenkinsURL=jenkins.model.Jenkins.instance.getRootUrl()
+job=jenkins.model.Jenkins.instance.getJob(SOURCE_PROJECT)
+html="""
+&lt;div class="task"&gt;
+&lt;a href="/job/$SOURCE_PROJECT/build?delay=0sec" target="_blank"&gt;Review Build Form&lt;/a&gt;&lt;br&gt;
+&lt;a href="/job/${LAST_CONFIGURATION.replace('#','/')}" target="_blank"&gt;Latest Configuration Analysis&lt;/a&gt;
+&lt;/div&gt;
+"""
+return job.description +html</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script/>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>SOURCE_PROJECT,LAST_CONFIGURATION</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>false</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>JSON_PARAM</name>
+          <description>[hidden] A JSON formatted parameter array used for interactive creation of artifacts</description>
+          <randomName>choice-parameter-97928931452181</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script> return """
+&lt;textarea id="transferParam" name="value" rows="5" class="setting-input   "&gt;&lt;/textarea&gt;
+ """</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script/>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters/>
+          <choiceType>ET_FORMATTED_HIDDEN_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>SOURCEDATA</name>
+          <description>JSON formatted SOURCEDATA</description>
+          <randomName>choice-parameter-1955967023202390</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script> return """
+&lt;textarea id="sourcedataJson" name="value" rows="5" class="setting-input   "&gt;&lt;/textarea&gt;
+ """</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script/>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters/>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>BUILD_STEPS</name>
+          <description>Select BUILD_STEPS that you would like to copy to the new Jenkins project</description>
+          <randomName>choice-parameter-1860256645720615</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>/*
+PROJECT_BUILDSTEPS script: 
+Creates an HTML table for parameter selction with links to scriptlets
+Hovering over a checkbox  reveals the TYPE of parameter
+*/
+import org.jenkinsci.plugins.scriptler.config.Parameter;
+import org.jenkinsci.plugins.scriptler.config.Script;
+import org.jenkinsci.plugins.scriptler.config.ScriptlerConfiguration;
+import hudson.model.*
+import jenkins.model.*
+
+lastConfig=LAST_CONFIGURATION.split('#')[-1]
+jobBuildSteps=[]
+sourceJob=jenkins.model.Jenkins.instance.getJob(SOURCE_PROJECT.trim())
+
+sBuilders=sourceJob.getBuildersList()
+
+k=0
+  sBuilders.each{ 
+      builderMap=[:] //civilized map for selected builder attributes
+      builderMap=['serial_id':'','label':'','type':'','about':'','scriptClass':'','script':'','steps':'','source':'','codeRef':'']
+  k++ 
+  builderClass=(it.class as String).tokenize('.')[-1] as String
+  builderMap.serial_id="$k"
+  builderMap.label=builderClass-'Builder'+'_'+k
+  builderMap.codeRef='builder_'+k+'_UNNAMED_'+k+'_script.txt'
+  builderAttrMap=makeBuilderReport(it, lastConfig)
+  builderMap=builderMap+builderAttrMap //we combine attributes
+  jobBuildSteps.add(builderMap) 
+}
+
+tablePrefix="""
+		&lt;style type="text/css"&gt;
+		.tooltip {
+			border-bottom: 1px dotted #000000; color: #000000; outline: none;
+			cursor: help; text-decoration: none;
+			position: relative;
+		}
+		.tooltip span {
+			margin-left: -999em;
+			position: absolute;
+		}
+		.tooltip:hover span {
+			border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+			font-family: Calibri, Tahoma, Geneva, sans-serif;
+			position: absolute; left: 1em; top: 2em; z-index: 99;
+			margin-left: 0; width: 250px;
+		}
+		.tooltip:hover img {
+			border: 0; margin: -10px 0 0 -55px;
+			float: left; position: absolute;
+		}
+		.tooltip:hover em {
+			font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+			display: block; padding: 0.2em 0 0.6em 0;
+		}
+		.classic { padding: 0.8em 1em; }
+		.custom { padding: 0.5em 0.8em 0.8em 2em; }
+		* html a:hover { background: transparent; }
+		.classic {background: #FFFFAA; border: 1px solid #FFAD33; }
+		.critical { background: #FFCCAA; border: 1px solid #FF3334;	}
+		.help { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+		.info { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+		.warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+		&lt;/style&gt;
+&lt;input type="checkbox" id="select_allParams" name="allParamChecked" onclick="selectAllSourceParams()"&gt; SELECT ALL&lt;/&gt;
+&lt;table width="100%""&gt;
+                  &lt;thead&gt;
+                    &lt;tr&gt;
+                    &lt;th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;"&gt;BUILDER_LABEL&lt;/th&gt;
+                    &lt;!--th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;"&gt;TYPE&lt;/th--&gt;
+                    &lt;th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;"&gt;ABOUT&lt;/th&gt;
+					&lt;th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;"&gt;STEPS&lt;/th&gt;   
+                    &lt;th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;"&gt;SCRIPTS&lt;/th&gt;                
+                    &lt;/tr&gt;
+                  &lt;/thead&gt;
+                &lt;tbody&gt;
+                """ 
+tableMain=jobBuildSteps.collect{"""&lt;tr&gt;&lt;td style="width:25%"&gt; &lt;input type="checkbox" id="check_${it.label}" name="${it.label}" " 
+value="${it.label}"/&gt;
+&lt;a class="tooltip" &gt;${it.label}&lt;span class="info"&gt;[${it.type}]${it.about}&lt;/span&gt;&lt;/a&gt;
+&lt;/td&gt;
+&lt;!--td style="width:25%; border: 1px solid #2196f3;"&gt;&lt;input id="${it.type}" class="setting-input"  type="text"  name="${it.type}"  value="${it.type}" disabled&gt;&lt;/td--&gt;
+&lt;td style="width:30%"&gt;&lt;input ${(it.about!='')?it.about:''} type="text" class="setting-input"   name="${it.about}"  value="${it.about}" disabled&gt;&lt;/td&gt;
+&lt;td style="width:30%"&gt;&lt;input ${(it.steps!='')?it.steps:'--'} type="text" class="setting-input"   name="${it.steps}"  value="${it.steps}" disabled&gt;&lt;/td&gt;
+${it.codeRef.tokenize(',').withIndex().collect{s,d-&gt; """&lt;td style="width:100%"&gt;
+&lt;a id="script_${it.label}" type="text" href="${s}" 
+onclick="window.open(this.href,'nom_Popup','​height=400 , width=400 ,location=no ,resizable=yes ,scrollbars=yes');return false;"&gt; ${(it.script.split(','))[d]}&lt;/a&gt;
+&lt;/td&gt;"""}}&lt;tr&gt;"""}.join('\n')
+
+tablePostfix="""&lt;/tbody&gt;&lt;/table&gt;
+"""
+return tablePrefix+tableMain+tablePostfix
+
+
+/* A method to create a tabular HTML report 
+for a particular class of Jenkins Builder
+Available attributes
+['serial_id':'','label':'','type':'','about':'','scriptClass':'','script':'','steps':'','source':'','codeRef':'']
+*/
+def makeBuilderReport(hudson.tasks.Builder builder, lastConfig) {
+ attrMap=[:]
+ builderClass=(builder.class as String).tokenize('.')[-1] as String
+ attrMap.type=builderClass
+  
+ switch(builderClass){
+ case"ScriptlerBuilder":
+   attrMap.script=builder.getScriptId()   
+   Script s = ScriptlerConfiguration.getConfiguration().getScriptById(builder.getScriptId());
+   attrMap.about=s.comment
+   attrMap.codeRef="/scriptler/runScript?id=${builder.getScriptId()}" 
+ break
+case"EnvInjectBuilder":
+	propertiesFile=builder.getInfo().getPropertiesFilePath()
+    //println '\t'+propertiesFile
+    //println '\tMore Env Props:'+builder.getInfo().getPropertiesContent().replace('\n','\n\t')
+    attrMap.source=propertiesFile
+    attrMap.about='EnvInjectBuilder Properties'
+break   
+case"Groovy":
+	scriptFile=builder.getScriptSource().getScriptFile().replace('\\','/')
+    attrMap.script=scriptFile.split('/')[-1]
+    attrMap.about='Groovy Script'
+    if(lastConfig!=''){
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts/${scriptFile.split('/')[-1]}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break
+case"SystemGroovy":
+	scriptFile=builder.getSource().getScriptFile().replace('\\','/')
+    //println '\t'+scriptFile
+   // println '\tScriptBindings:'+builder.getBindings()
+    attrMap.script=scriptFile.split('/')[-1]
+    attrMap.about='System Groovy Script'
+    if(lastConfig!=''){
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts/${scriptFile.split('/')[-1]}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break
+case"R":
+    //println '\t Embedded R Command'
+    attrMap.source='Embedded R Command'
+    attrMap.about='Embedded R Command'
+break
+case"SSHBuilder":
+    //println '\t'+builder.getSiteName()
+    attrMap.source='embedded command'
+    attrMap.about='SSH site '+builder.getSiteName()
+break
+case"BatchFile":
+    attrMap.about='Executes Windows batch file'
+    attrMap.source='Windows batch file'
+break
+case"ConditionalBuilder":
+    runCondition=(builder.getRunCondition().class as String).tokenize('.')[-1] as String
+    
+    attrMap.about='Conditional on '+runCondition
+    condClassList=[]
+    condScriptList=[]
+	builder.getConditionalbuilders().each{
+    println it.class
+    if (it.class.simpleName=='Groovy'){
+        println it.scriptSource.properties
+        condScriptList.add(it.scriptSource.scriptFile.split('/')[-1])
+    }else{
+    println '\t'+it.properties
+    }
+    condClassList.add(it.class.simpleName)
+    //printBuilderReport(it)   
+    }
+    attrMap.steps= condClassList.join(',')
+    attrMap.script=condScriptList.join(',')
+    if(lastConfig!=''){
+        xternal="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts"
+        attrMap.codeRef=condScriptList.collect{xternal+"/$it/*view*/"}.join(',')
+        //"/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts/${scriptFile.split('/')[-1]}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break
+case"SingleConditionalBuilder":
+    //println '\t'+builder.getSiteName()
+     scriptLocation='externalScripts'
+   if (builder.buildStep.class.simpleName.contains('Groovy')){
+     attrMap.about='Executes '+ builder.buildStep.class.simpleName    
+     
+     if(builder.buildStep.class.simpleName=='Groovy'){
+         attrMap.script=(builder.buildStep.scriptSource.class.simpleName=='FileScriptSource')?builder.buildStep.scriptSource.scriptFile.replace('\\','/').split('/')[-1]:builderMap.codeRef
+         builderMap.codeRef=(builder.buildStep.scriptSource.class.simpleName=='FileScriptSource')?attrMap.script:attrMap.script.replace('script','scriptSource')
+         scriptLocation=(builder.buildStep.scriptSource.class.simpleName=='FileScriptSource')?'externalScripts':'embeddedScripts'
+     }else{
+     scriptLocation='embeddedScripts'
+     attrMap.script=builderMap.codeRef 
+     }   
+   }else{
+    attrMap.steps=builder.buildStep.getPhaseJobs().collect{it.jobName}.join(',')
+    attrMap.about='Executes '+builder.buildStep.getPhaseName()
+   }
+    if(lastConfig!=''){
+        //jobProp.script="parameter_${k}_${jobProp.name}_secureScript.txt"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/${scriptLocation}/${builderMap.codeRef}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break    
+case"MultiJobBuilder":
+    //println '\t'+builder.getSiteName()
+    attrMap.steps=builder.getPhaseJobs().collect{it.jobName}.join(',')
+    attrMap.about='Executes '+ builder.getPhaseName()
+break
+default:
+//do default actions
+  println 'Uknown case:'+builderClass
+}
+  print '\n' 
+  return attrMap
+}
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script>return 'Error in PROJECT_BUILDSTEPS script'</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>SOURCE_PROJECT,LAST_CONFIGURATION</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>false</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>SESSION_PARAMDB</name>
+          <description>[hidden]The Job Session Parameter DB Table </description>
+          <randomName>choice-parameter-97929014628395</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>H2_inMem_ParameterDB.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>vHELPER_DB</string>
+                <string>$HELPER_DB</string>
+              </entry>
+              <entry>
+                <string>vSTOREDPARAMS</string>
+                <string>JSON_PARAM,SOURCEDATA</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>JSON_PARAM,SOURCEDATA,HELPER_DB</referencedParameters>
+          <choiceType>ET_FORMATTED_HIDDEN_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.3">
+          <name>BUILDSTEP_LIST</name>
+          <description/>
+          <randomName>choice-parameter-97929091567224</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>import org.h2.Driver
+import groovy.sql.Sql
+
+def choices=[:]
+def slurper = new groovy.json.JsonSlurper()
+helperDB=SESSION_PARAMDB.replace('PARAMS', jenkinsProject.name)
+def sql = Sql.newInstance("jdbc:h2:mem:$helperDB", "org.h2.Driver")
+stm='SELECT * FROM '+SESSION_PARAMDB + ' WHERE PARAM LIKE \'SOURCEDATA%\' AND NOT PARAMVALUE= \'\''
+
+sql.eachRow(stm) { row -&gt;
+paramid=row.PARAM.toString()
+jst=row.PARAMVALUE.toString()
+dataLabel='PARAM'//slurper.parseText(jst).DATA_LABEL
+slurper.parseText(jst).SOURCE_DATA.eachWithIndex{it,ind-&gt;
+  println it
+choiceKey=paramid+'@'+it.source_job+':'+it.builder_label+'@'+it.builder_label
+k=0
+if(!choices.containsKey("$choiceKey".toString())){
+  choices.put(choiceKey,"${ind+1} . ${it.builder_label} from \t(${it.source_job})" as String)
+}
+}
+
+
+}
+
+return choices</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script>return "Error in BUILDSTEP_LIST script using SESSION_PARAMDB,SOURCEDATA,MANAGE\n\r $SESSION_PARAMDB,\n\r$SOURCEDATA,\n\r$MANAGE"</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>SESSION_PARAMDB,SOURCEDATA,MANAGE</referencedParameters>
+          <choiceType>PT_CHECKBOX</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>MANAGE</name>
+          <description>Actions for managing selecetd PARAMETERS
+</description>
+          <randomName>choice-parameter-357414639254151</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>/*
+parameter_13_MANAGE_secureScript
+*/
+
+html='''&lt;div id="managePlan"&gt;
+&lt;input id="addData" name="subject" type="button" value="ADD BUILD STEPS" onclick="addToSourceData('sourcedataJson')"/&gt;
+&lt;input id="deleteData" type="button" value="DELETE" onclick="setJsonActionParams('sourcedataJson', this.id)"/&gt;
+&lt;input id="moveUp" type="button" value="MOVE_UP" onclick="setJsonActionParams('sourcedataJson', this.id)"/&gt;
+&lt;input id="mvStep" type="number" value="1" step=1 style="width: 3em;"&gt;
+&lt;input id="moveDown" type="button" value="MOVE_DOWN" onclick="setJsonActionParams('sourcedataJson', this.id)"/&gt;
+&lt;/div&gt;'''
+return html
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script>return "Error in MANAGE script with: $SESSION_PARAMDB, $MANAGE_ACTION"</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters/>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>helperJavaScript</name>
+          <description/>
+          <randomName>choice-parameter-357414631952105</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>/* 
+ParamType:: AC-Reactive Reference Groovy Script 
+Function: loads the helper javascript from the buildScripts project folder
+referencedParameters: NA
+*/
+
+env=System.getenv()
+helperJavaScriptPath="${env['JENKINS_HOME']}/jobs/${jenkinsProject.name}/buildScripts/helperJavaScript.js"
+helperJavaScript= new File(helperJavaScriptPath as String)
+return """ &lt;script type="text/javascript"&gt; ${helperJavaScript.text} //# sourceURL=helperJavaScipt.js &lt;/script&gt;"""</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script/>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters/>
+          <choiceType>ET_FORMATTED_HIDDEN_HTML</choiceType>
+          <omitValueField>false</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.3">
+          <name>TARGET_PROJECT</name>
+          <description>Name the project to be generated</description>
+          <randomName>choice-parameter-4192339651314622</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.72">
+              <script>return """
+
+&lt;input name="value" type="text" class="setting-input   " value="TARGET_PROJECT"&gt;
+
+"""</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.72">
+              <script>return 'Error in TARGET_PROJECT script'</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JOB_BUILDSTEP_ASSEMBLER</projectName>
+          <projectFullName>JOB_BUILDSTEP_ASSEMBLER</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters/>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <hudson.model.BooleanParameterDefinition>
+          <name>APPEND_MODE</name>
+          <description>In APPEND_MODE the selected build steps are appended to existing ones. Otherwise the NEW build steps overwrite the original ones</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <org.jenkinsci.plugins.scriptler.builder.ScriptlerBuilder plugin="scriptler@3.1">
+      <builderId>1617727762906_1</builderId>
+      <scriptId>JenkinsBuildStepCopy.groovy</scriptId>
+      <propagateParams>false</propagateParams>
+      <parameters>
+        <org.jenkinsci.plugins.scriptler.config.Parameter>
+          <name>vSourceDataJson</name>
+          <value>$SOURCEDATA</value>
+        </org.jenkinsci.plugins.scriptler.config.Parameter>
+        <org.jenkinsci.plugins.scriptler.config.Parameter>
+          <name>vMode</name>
+          <value>$APPEND_MODE</value>
+        </org.jenkinsci.plugins.scriptler.config.Parameter>
+        <org.jenkinsci.plugins.scriptler.config.Parameter>
+          <name>vTargetProject</name>
+          <value>$TARGET_PROJECT</value>
+        </org.jenkinsci.plugins.scriptler.config.Parameter>
+      </parameters>
+    </org.jenkinsci.plugins.scriptler.builder.ScriptlerBuilder>
+  </builders>
+  <publishers>
+    <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.4">
+      <stableText>&lt;h3&gt;Build steps copied from project(s) ${ENV:SOURCE_PROJECT} etc. Append Mode is ${ENV:APPEND_MODE}&lt;/h3&gt;
+Review builders using: &lt;a target="_blank"  href="/job/JOB_BUILDSTEP_ASSEMBLER/build"&gt;JOB_BUILDSTEP_ASSEMBLER&lt;/a&gt; or run it &lt;a target="_blank"  href="/job/${ENV:TARGET_PROJECT}"&gt;${ENV:TARGET_PROJECT}&lt;/a&gt;</stableText>
+      <unstableText/>
+      <failedText/>
+      <abortedText/>
+      <nullAction>0</nullAction>
+      <unstableAsStable>true</unstableAsStable>
+      <failedAsStable>true</failedAsStable>
+      <abortedAsStable>true</abortedAsStable>
+      <parserName>HTML</parserName>
+    </org.korosoft.jenkins.plugin.rtp.RichTextPublisher>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@2.1.0">
+      <template>${ENV,var="TARGET_PROJECT"}_from_${ENV,var="SOURCE_PROJECT"}</template>
+      <descriptionTemplate/>
+      <runAtStart>true</runAtStart>
+      <runAtEnd>true</runAtEnd>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

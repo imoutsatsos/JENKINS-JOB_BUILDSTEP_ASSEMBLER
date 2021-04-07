@@ -1,0 +1,5 @@
+return """
+
+<input name="value" type="text" class="setting-input   " value="TARGET_PROJECT">
+
+"""

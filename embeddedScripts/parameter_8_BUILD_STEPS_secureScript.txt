@@ -1,0 +1,224 @@
+/*
+PROJECT_BUILDSTEPS script: 
+Creates an HTML table for parameter selction with links to scriptlets
+Hovering over a checkbox  reveals the TYPE of parameter
+*/
+import org.jenkinsci.plugins.scriptler.config.Parameter;
+import org.jenkinsci.plugins.scriptler.config.Script;
+import org.jenkinsci.plugins.scriptler.config.ScriptlerConfiguration;
+import hudson.model.*
+import jenkins.model.*
+
+lastConfig=LAST_CONFIGURATION.split('#')[-1]
+jobBuildSteps=[]
+sourceJob=jenkins.model.Jenkins.instance.getJob(SOURCE_PROJECT.trim())
+
+sBuilders=sourceJob.getBuildersList()
+
+k=0
+  sBuilders.each{ 
+      builderMap=[:] //civilized map for selected builder attributes
+      builderMap=['serial_id':'','label':'','type':'','about':'','scriptClass':'','script':'','steps':'','source':'','codeRef':'']
+  k++ 
+  builderClass=(it.class as String).tokenize('.')[-1] as String
+  builderMap.serial_id="$k"
+  builderMap.label=builderClass-'Builder'+'_'+k
+  builderMap.codeRef='builder_'+k+'_UNNAMED_'+k+'_script.txt'
+  builderAttrMap=makeBuilderReport(it, lastConfig)
+  builderMap=builderMap+builderAttrMap //we combine attributes
+  jobBuildSteps.add(builderMap) 
+}
+
+tablePrefix="""
+		<style type="text/css">
+		.tooltip {
+			border-bottom: 1px dotted #000000; color: #000000; outline: none;
+			cursor: help; text-decoration: none;
+			position: relative;
+		}
+		.tooltip span {
+			margin-left: -999em;
+			position: absolute;
+		}
+		.tooltip:hover span {
+			border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+			font-family: Calibri, Tahoma, Geneva, sans-serif;
+			position: absolute; left: 1em; top: 2em; z-index: 99;
+			margin-left: 0; width: 250px;
+		}
+		.tooltip:hover img {
+			border: 0; margin: -10px 0 0 -55px;
+			float: left; position: absolute;
+		}
+		.tooltip:hover em {
+			font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+			display: block; padding: 0.2em 0 0.6em 0;
+		}
+		.classic { padding: 0.8em 1em; }
+		.custom { padding: 0.5em 0.8em 0.8em 2em; }
+		* html a:hover { background: transparent; }
+		.classic {background: #FFFFAA; border: 1px solid #FFAD33; }
+		.critical { background: #FFCCAA; border: 1px solid #FF3334;	}
+		.help { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+		.info { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+		.warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+		</style>
+<input type="checkbox" id="select_allParams" name="allParamChecked" onclick="selectAllSourceParams()"> SELECT ALL</>
+<table width="100%"">
+                  <thead>
+                    <tr>
+                    <th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">BUILDER_LABEL</th>
+                    <!--th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">TYPE</th-->
+                    <th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">ABOUT</th>
+					<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">STEPS</th>   
+                    <th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">SCRIPTS</th>                
+                    </tr>
+                  </thead>
+                <tbody>
+                """ 
+tableMain=jobBuildSteps.collect{"""<tr><td style="width:25%"> <input type="checkbox" id="check_${it.label}" name="${it.label}" " 
+value="${it.label}"/>
+<a class="tooltip" >${it.label}<span class="info">[${it.type}]${it.about}</span></a>
+</td>
+<!--td style="width:25%; border: 1px solid #2196f3;"><input id="${it.type}" class="setting-input"  type="text"  name="${it.type}"  value="${it.type}" disabled></td-->
+<td style="width:30%"><input ${(it.about!='')?it.about:''} type="text" class="setting-input"   name="${it.about}"  value="${it.about}" disabled></td>
+<td style="width:30%"><input ${(it.steps!='')?it.steps:'--'} type="text" class="setting-input"   name="${it.steps}"  value="${it.steps}" disabled></td>
+${it.codeRef.tokenize(',').withIndex().collect{s,d-> """<td style="width:100%">
+<a id="script_${it.label}" type="text" href="${s}" 
+onclick="window.open(this.href,'nom_Popup','​height=400 , width=400 ,location=no ,resizable=yes ,scrollbars=yes');return false;"> ${(it.script.split(','))[d]}</a>
+</td>"""}}<tr>"""}.join('\n')
+
+tablePostfix="""</tbody></table>
+"""
+return tablePrefix+tableMain+tablePostfix
+
+
+/* A method to create a tabular HTML report 
+for a particular class of Jenkins Builder
+Available attributes
+['serial_id':'','label':'','type':'','about':'','scriptClass':'','script':'','steps':'','source':'','codeRef':'']
+*/
+def makeBuilderReport(hudson.tasks.Builder builder, lastConfig) {
+ attrMap=[:]
+ builderClass=(builder.class as String).tokenize('.')[-1] as String
+ attrMap.type=builderClass
+  
+ switch(builderClass){
+ case"ScriptlerBuilder":
+   attrMap.script=builder.getScriptId()   
+   Script s = ScriptlerConfiguration.getConfiguration().getScriptById(builder.getScriptId());
+   attrMap.about=s.comment
+   attrMap.codeRef="/scriptler/runScript?id=${builder.getScriptId()}" 
+ break
+case"EnvInjectBuilder":
+	propertiesFile=builder.getInfo().getPropertiesFilePath()
+    //println '\t'+propertiesFile
+    //println '\tMore Env Props:'+builder.getInfo().getPropertiesContent().replace('\n','\n\t')
+    attrMap.source=propertiesFile
+    attrMap.about='EnvInjectBuilder Properties'
+break   
+case"Groovy":
+	scriptFile=builder.getScriptSource().getScriptFile().replace('\\','/')
+    attrMap.script=scriptFile.split('/')[-1]
+    attrMap.about='Groovy Script'
+    if(lastConfig!=''){
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts/${scriptFile.split('/')[-1]}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break
+case"SystemGroovy":
+	scriptFile=builder.getSource().getScriptFile().replace('\\','/')
+    //println '\t'+scriptFile
+   // println '\tScriptBindings:'+builder.getBindings()
+    attrMap.script=scriptFile.split('/')[-1]
+    attrMap.about='System Groovy Script'
+    if(lastConfig!=''){
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts/${scriptFile.split('/')[-1]}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break
+case"R":
+    //println '\t Embedded R Command'
+    attrMap.source='Embedded R Command'
+    attrMap.about='Embedded R Command'
+break
+case"SSHBuilder":
+    //println '\t'+builder.getSiteName()
+    attrMap.source='embedded command'
+    attrMap.about='SSH site '+builder.getSiteName()
+break
+case"BatchFile":
+    attrMap.about='Executes Windows batch file'
+    attrMap.source='Windows batch file'
+break
+case"ConditionalBuilder":
+    runCondition=(builder.getRunCondition().class as String).tokenize('.')[-1] as String
+    
+    attrMap.about='Conditional on '+runCondition
+    condClassList=[]
+    condScriptList=[]
+	builder.getConditionalbuilders().each{
+    println it.class
+    if (it.class.simpleName=='Groovy'){
+        println it.scriptSource.properties
+        condScriptList.add(it.scriptSource.scriptFile.split('/')[-1])
+    }else{
+    println '\t'+it.properties
+    }
+    condClassList.add(it.class.simpleName)
+    //printBuilderReport(it)   
+    }
+    attrMap.steps= condClassList.join(',')
+    attrMap.script=condScriptList.join(',')
+    if(lastConfig!=''){
+        xternal="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts"
+        attrMap.codeRef=condScriptList.collect{xternal+"/$it/*view*/"}.join(',')
+        //"/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/externalScripts/${scriptFile.split('/')[-1]}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break
+case"SingleConditionalBuilder":
+    //println '\t'+builder.getSiteName()
+     scriptLocation='externalScripts'
+   if (builder.buildStep.class.simpleName.contains('Groovy')){
+     attrMap.about='Executes '+ builder.buildStep.class.simpleName    
+     
+     if(builder.buildStep.class.simpleName=='Groovy'){
+         attrMap.script=(builder.buildStep.scriptSource.class.simpleName=='FileScriptSource')?builder.buildStep.scriptSource.scriptFile.replace('\\','/').split('/')[-1]:builderMap.codeRef
+         builderMap.codeRef=(builder.buildStep.scriptSource.class.simpleName=='FileScriptSource')?attrMap.script:attrMap.script.replace('script','scriptSource')
+         scriptLocation=(builder.buildStep.scriptSource.class.simpleName=='FileScriptSource')?'externalScripts':'embeddedScripts'
+     }else{
+     scriptLocation='embeddedScripts'
+     attrMap.script=builderMap.codeRef 
+     }   
+   }else{
+    attrMap.steps=builder.buildStep.getPhaseJobs().collect{it.jobName}.join(',')
+    attrMap.about='Executes '+builder.buildStep.getPhaseName()
+   }
+    if(lastConfig!=''){
+        //jobProp.script="parameter_${k}_${jobProp.name}_secureScript.txt"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/$lastConfig/artifact/${scriptLocation}/${builderMap.codeRef}/*view*/"
+        }else{
+        //jobProp.script="NOT_PARSED_YET-ClickToAnalyze"
+        attrMap.codeRef="/job/JOB_CONFIG_ANALYZER/build"
+    }
+break    
+case"MultiJobBuilder":
+    //println '\t'+builder.getSiteName()
+    attrMap.steps=builder.getPhaseJobs().collect{it.jobName}.join(',')
+    attrMap.about='Executes '+ builder.getPhaseName()
+break
+default:
+//do default actions
+  println 'Uknown case:'+builderClass
+}
+  print '\n' 
+  return attrMap
+}

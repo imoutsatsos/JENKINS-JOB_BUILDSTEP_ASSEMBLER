@@ -1,0 +1,10 @@
+/* 
+ParamType:: AC-Reactive Reference Groovy Script 
+Function: loads the helper javascript from the buildScripts project folder
+referencedParameters: NA
+*/
+
+env=System.getenv()
+helperJavaScriptPath="${env['JENKINS_HOME']}/jobs/${jenkinsProject.name}/buildScripts/helperJavaScript.js"
+helperJavaScript= new File(helperJavaScriptPath as String)
+return """ <script type="text/javascript"> ${helperJavaScript.text} //# sourceURL=helperJavaScipt.js </script>"""

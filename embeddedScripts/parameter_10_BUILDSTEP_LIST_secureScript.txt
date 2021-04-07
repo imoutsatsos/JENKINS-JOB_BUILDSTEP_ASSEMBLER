@@ -1,0 +1,26 @@
+import org.h2.Driver
+import groovy.sql.Sql
+
+def choices=[:]
+def slurper = new groovy.json.JsonSlurper()
+helperDB=SESSION_PARAMDB.replace('PARAMS', jenkinsProject.name)
+def sql = Sql.newInstance("jdbc:h2:mem:$helperDB", "org.h2.Driver")
+stm='SELECT * FROM '+SESSION_PARAMDB + ' WHERE PARAM LIKE \'SOURCEDATA%\' AND NOT PARAMVALUE= \'\''
+
+sql.eachRow(stm) { row ->
+paramid=row.PARAM.toString()
+jst=row.PARAMVALUE.toString()
+dataLabel='PARAM'//slurper.parseText(jst).DATA_LABEL
+slurper.parseText(jst).SOURCE_DATA.eachWithIndex{it,ind->
+  println it
+choiceKey=paramid+'@'+it.source_job+':'+it.builder_label+'@'+it.builder_label
+k=0
+if(!choices.containsKey("$choiceKey".toString())){
+  choices.put(choiceKey,"${ind+1} . ${it.builder_label} from \t(${it.source_job})" as String)
+}
+}
+
+
+}
+
+return choices

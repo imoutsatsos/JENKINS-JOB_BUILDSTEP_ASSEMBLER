@@ -1,0 +1,10 @@
+import hudson.model.*
+jenkinsURL=jenkins.model.Jenkins.instance.getRootUrl()
+job=jenkins.model.Jenkins.instance.getJob(SOURCE_PROJECT)
+html="""
+<div class="task">
+<a href="/job/$SOURCE_PROJECT/build?delay=0sec" target="_blank">Review Build Form</a><br>
+<a href="/job/${LAST_CONFIGURATION.replace('#','/')}" target="_blank">Latest Configuration Analysis</a>
+</div>
+"""
+return job.description +html
